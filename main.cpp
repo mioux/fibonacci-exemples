@@ -4,9 +4,14 @@
 #include <ratio>
 #include <chrono>
 #include <climits>
+#include <string.h>
+#include <iomanip>
 
 using namespace std;
 using namespace std::chrono;
+
+unsigned long long *valeurs_recurs = NULL;
+bool do_table = false;
 
 /*
  * Explications :
@@ -21,11 +26,46 @@ using namespace std::chrono;
 
 unsigned long long fibo_recurs(unsigned int pos)
 {
-    if (pos < 2)
+    static bool overflow = false;
+
+    if (valeurs_recurs == NULL)
     {
-        return 1;
+        /* +1 car on veut l'élément de position pos en partant de 0.
+         * Or si un tableau a une longueur de pos, il contient exactement pos élément DONT le 0
+         */
+        valeurs_recurs = new unsigned long long [pos + 1]; 
+        for (unsigned int i = 0; i <= pos; ++i)
+        {
+            valeurs_recurs[i] = (i < 2 ? 1 : 0);
+        }
     }
-    return fibo_recurs(pos - 1) + fibo_recurs(pos - 2);
+
+    if (valeurs_recurs[pos] != 0)
+    {
+        return valeurs_recurs[pos];
+    }
+
+    unsigned long long val_pos_1 = valeurs_recurs[pos - 1];
+    if (val_pos_1 == 0)
+    {
+        val_pos_1 = fibo_recurs(pos - 1);
+    }
+
+    unsigned long long val_pos_2 = valeurs_recurs[pos - 2];
+    /*
+     * Pas besoin de vérifier que la valeur existe dans le tableau, elle y est forcément
+     * car calculée pour trouver val_pos_1
+     */
+
+    valeurs_recurs[pos] = val_pos_1 + val_pos_2;
+
+    if (overflow == false && valeurs_recurs[pos] < valeurs_recurs[pos - 1])
+    {
+        cerr << "Dépassement de capacité, on ne peut calculer plus loin que le terme " << pos - 1 << "." << endl;
+        overflow = true;
+    }
+
+    return val_pos_1 + val_pos_2;
 }
 
 /*
@@ -38,20 +78,51 @@ unsigned long long fibo_recurs(unsigned int pos)
 
 unsigned long long fibo_iter(unsigned int pos)
 {
+    bool overflow = false;
+
     if (pos < 2)
     {
         return 1;
     }
 
-    long long val_pos_2 = 1;
-    long long val_pos_1 = 1;
-    long long val_pos;
+    unsigned long long val_pos_2 = 1;
+    unsigned long long val_pos_1 = 1;
+    unsigned long long val_pos;
+
+    size_t headerWidth[3] = {
+        string("Position").size(),
+        string("Valeur              ").size(),
+        string("Phi             ").size()
+    };
+
+    if (do_table == true)
+    {
+        cout << "Position | Valeur               | Phi             " << endl
+             << "-------------------------------------------------" << endl
+             << "0        | 1                    |                1" << endl
+             << "1        | 1                    |                1" << endl;
+    }
 
     for (unsigned int i = 2; i <= pos; ++i)
     {
         val_pos = val_pos_1 + val_pos_2;
         val_pos_2 = val_pos_1;
         val_pos_1 = val_pos;
+
+        if (overflow == false && val_pos_1 < val_pos_2)
+        {
+            cerr << "Dépassement de capacité, on ne peut calculer plus loin que le terme " << i - 1 << "." << endl;
+            overflow = true;
+        }
+
+        if (do_table == true)
+        {
+            cout << left << setw(headerWidth[0]) << i << flush;
+            cout << " | ";
+            cout << left << setw(headerWidth[1]) << val_pos << flush;
+            cout << " | ";
+            cout << right << setw(headerWidth[2]) << ((val_pos_1 * 1.0) / (val_pos_2 * 1.0)) << endl;
+        }
     }
     return val_pos;
 }
@@ -62,41 +133,57 @@ unsigned long long fibo_iter(unsigned int pos)
  * À part si vous êtes un développeur, ce n'est pas la partie qui va vous intéresser
  */
 
-int main()
+int main(int argc, char *argv[])
 {
     unsigned int pos;
-    long long valeur;
-    long long valeur_1;
+    unsigned long long valeur;
+    unsigned long long valeur_1;
+
+    if (argc > 1 && strcmp(argv[1], "--table") == 0)
+    {
+        do_table = true;
+    }
 
     cout.precision(numeric_limits<double>::digits10);
 
-    cout << "Quelle position souhaitez vous calculer ?" << endl << "Rappel, les positions sont calculées à partir de 0. Max " << UINT_MAX << "." << endl << "Position: ";
+    cout << "Quelle position souhaitez vous calculer ?" << endl << "Rappel, les positions sont calculées à partir de 0." << endl << "Position: ";
     cin >> pos;
 
-    cout << "Calcul en itératif : " << flush;
+    if (do_table == false)
+    {
+        cout << "Calcul en itératif : " << flush;
+    }
     high_resolution_clock::time_point start = high_resolution_clock::now();
     valeur = fibo_iter(pos);
     duration<double, std::milli> time_span = high_resolution_clock::now() - start;
+    if (do_table == true)
+    {
+        cout << "Calcul en itératif : ";
+    }
     cout << time_span.count() << "ms" << endl;
     cout << "Valeur calculée : fibo_iter(" << pos << ") = " << valeur << endl;
     
-    cout << "Calcul en récursif : " << flush;
-    start = high_resolution_clock::now();
-    valeur = fibo_recurs(pos);
-    time_span = high_resolution_clock::now() - start;
-    cout << time_span.count() << "ms" << endl;
-    cout << "Valeur calculée : fibo_recurs(" << pos << ") = " << valeur << endl;
+    if (do_table == false)
+    {
+        cout << "Calcul en récursif : " << flush;
+        start = high_resolution_clock::now();
+        valeur = fibo_recurs(pos);
+        time_span = high_resolution_clock::now() - start;
+        cout << time_span.count() << "ms" << endl;
+        cout << "Valeur calculée : fibo_recurs(" << pos << ") = " << valeur << endl;
     
-    cout << "Approximation de φ : " << flush;
-    if (pos > 0)
-    {
-        valeur_1 = fibo_iter(pos - 1);
-        double phi = (valeur * 1.0) / (valeur_1 * 1.0);
-        cout << phi << endl;
-    }
-    else
-    {
-        cout << 1 << endl;
+
+        cout << "Approximation de φ : " << flush;
+        if (pos > 0)
+        {
+            valeur_1 = fibo_iter(pos - 1);
+            double phi = (valeur * 1.0) / (valeur_1 * 1.0);
+            cout << phi << endl;
+        }
+        else
+        {
+            cout << 1 << endl;
+        }
     }
 
     return EXIT_SUCCESS;
