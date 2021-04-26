@@ -88,8 +88,6 @@ unsigned long long fibo_iter(unsigned int pos)
     unsigned long long val_pos_2 = 1;
     unsigned long long val_pos_1 = 1;
     unsigned long long val_pos;
-<<<<<<< HEAD
-=======
 
     size_t headerWidth[3] = {
         string("Position").size(),
@@ -104,8 +102,6 @@ unsigned long long fibo_iter(unsigned int pos)
              << "0        | 1                    |                1" << endl
              << "1        | 1                    |                1" << endl;
     }
->>>>>>> 1b9d22e (Version optimisée + affichage de la table)
-
     for (unsigned int i = 2; i <= pos; ++i)
     {
         val_pos = val_pos_1 + val_pos_2;
@@ -141,14 +137,11 @@ int main(int argc, char *argv[])
     unsigned int pos;
     unsigned long long valeur;
     unsigned long long valeur_1;
-<<<<<<< HEAD
-=======
 
     if (argc > 1 && strcmp(argv[1], "--table") == 0)
     {
         do_table = true;
     }
->>>>>>> 1b9d22e (Version optimisée + affichage de la table)
 
     cout.precision(numeric_limits<double>::digits10);
 
