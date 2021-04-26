@@ -59,6 +59,7 @@ unsigned long long fibo_iter(unsigned int pos)
 /*
  * Ceci est la fonction principale du programme, c'est elle qui est appelée au démarrage.
  * Elle va demander la postiion du terme à calculer, et appeler les 2 fonctions pour déterminer le temps d'exécution de chacune (en milisecondes)
+ * À part si vous êtes un développeur, ce n'est pas la partie qui va vous intéresser
  */
 
 int main()
@@ -66,6 +67,8 @@ int main()
     unsigned int pos;
     long long valeur;
     long long valeur_1;
+
+    cout.precision(numeric_limits<double>::digits10);
 
     cout << "Quelle position souhaitez vous calculer ?" << endl << "Rappel, les positions sont calculées à partir de 0. Max " << UINT_MAX << "." << endl << "Position: ";
     cin >> pos;
