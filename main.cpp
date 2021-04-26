@@ -43,9 +43,9 @@ unsigned long long fibo_iter(unsigned int pos)
         return 1;
     }
 
-    long long val_pos_2 = 1;
-    long long val_pos_1 = 1;
-    long long val_pos;
+    unsigned long long val_pos_2 = 1;
+    unsigned long long val_pos_1 = 1;
+    unsigned long long val_pos;
 
     for (unsigned int i = 2; i <= pos; ++i)
     {
@@ -65,8 +65,8 @@ unsigned long long fibo_iter(unsigned int pos)
 int main()
 {
     unsigned int pos;
-    long long valeur;
-    long long valeur_1;
+    unsigned long long valeur;
+    unsigned long long valeur_1;
 
     cout.precision(numeric_limits<double>::digits10);
 
