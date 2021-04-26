@@ -89,7 +89,10 @@ unsigned long long fibo_iter(unsigned int pos)
     unsigned long long val_pos_1 = 1;
     unsigned long long val_pos;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 1b9d22edfd4af16086c1875a13d50a321e73a9c4
 
     size_t headerWidth[3] = {
         string("Position").size(),
@@ -104,7 +107,10 @@ unsigned long long fibo_iter(unsigned int pos)
              << "0        | 1                    |                1" << endl
              << "1        | 1                    |                1" << endl;
     }
+<<<<<<< HEAD
 >>>>>>> 1b9d22e (Version optimisée + affichage de la table)
+=======
+>>>>>>> 1b9d22edfd4af16086c1875a13d50a321e73a9c4
 
     for (unsigned int i = 2; i <= pos; ++i)
     {
@@ -142,13 +148,19 @@ int main(int argc, char *argv[])
     unsigned long long valeur;
     unsigned long long valeur_1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 1b9d22edfd4af16086c1875a13d50a321e73a9c4
 
     if (argc > 1 && strcmp(argv[1], "--table") == 0)
     {
         do_table = true;
     }
+<<<<<<< HEAD
 >>>>>>> 1b9d22e (Version optimisée + affichage de la table)
+=======
+>>>>>>> 1b9d22edfd4af16086c1875a13d50a321e73a9c4
 
     cout.precision(numeric_limits<double>::digits10);
 
