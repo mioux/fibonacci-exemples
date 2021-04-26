@@ -103,19 +103,6 @@ unsigned long long fibo_iter(unsigned int pos)
              << "1        | 1                    |                1" << endl;
     }
 
-    size_t headerWidth[3] = {
-        string("Position").size(),
-        string("Valeur              ").size(),
-        string("Phi             ").size()
-    };
-
-    if (do_table == true)
-    {
-        cout << "Position | Valeur               | Phi             " << endl
-             << "-------------------------------------------------" << endl
-             << "0        | 1                    |                1" << endl
-             << "1        | 1                    |                1" << endl;
-    }
     for (unsigned int i = 2; i <= pos; ++i)
     {
         val_pos = val_pos_1 + val_pos_2;
